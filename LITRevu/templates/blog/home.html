@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    {% block content %}
+    <section class="ftco-navbar">
+      <div class="container-fluid px-md-12">
+        <div class="col-md-12 text-center">
+          <a class="navbar-brand" href="#">
+            <img
+              class="rounded mx-auto d-block"
+              src="../../static/img/logo.png"
+              width="100"
+              height="80"
+              alt="Logo"
+            />
+            <h4>LITRevu</h4>
+          </a>
+        </div>
+      </div>
+
+      <nav
+        class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light"
+        id="ftco-navbar"
+      >
+        <div class="container-fluid">
+          <ul class="navbar-nav m-auto">
+            <li class="nav-item active">
+              <a href="#" class="nav-link">Home</a>
+            </li>
+            <li class="nav-item"><a href="#" class="nav-link">Flux</a></li>
+            <li class="nav-item"><a href="#" class="nav-link">Posts</a></li>
+            <li class="nav-item">
+              <a href="#" class="nav-link">Abonnements</a>
+            </li>
+
+            <li class="nav-item"><a href="#" class="nav-link">Login</a></li>
+          </ul>
+        </div>
+      </nav>
+      <!-- END nav -->
+    </section>
+
+    <ul>
+      {% if user.is_authenticated %}
+      <p>Vous êtes connecté !</p>
+      <p>Welcome, {{ user.username }}. Thanks for logging in.</p>
+      <a href="{% url 'logout' %}" class="link-success">Logout</a>
+      {% else %}
+      <p>Welcome, new user. Please log in.</p>
+      <a href="{% url 'login' %}" class="link-success">Login</a>
+      {% endif %}
+    </ul>
+
+    {% endblock content %}
+  </body>
+</html>

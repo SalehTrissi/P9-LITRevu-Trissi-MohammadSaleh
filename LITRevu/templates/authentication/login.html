@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'scss/style.css' %}" />
+    <title>Login</title>
+</head>
+
+<body>
+    {% block content %}
+
+    <section class="ftco-navbar">
+        <div class="container-fluid px-md-12">
+            <div class="col-md-12 text-center">
+                <a class="navbar-brand" href="#">
+                    <img class="rounded mx-auto d-block" src="../../static/img/logo.png" width="100" height="80"
+                        alt="Logo">
+                    <h4>LITRevu</h4>
+                </a>
+            </div>
+        </div>
+
+        <nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light" id="ftco-navbar">
+            <div class="container-fluid">
+                <ul class=" navbar-nav m-auto">
+                    <h2 class="text-light">Bienvenue</h2>
+                </ul>
+            </div>
+        </nav>
+        <!-- END nav -->
+    </section>
+
+    <ul class="text-center">
+        {% if user.is_authenticated %}
+        <p>Welcome, {{ user.username }}. Thanks for logging in.</p>
+        <a href="{% url 'logout' %}" class="link-success">Logout</a>
+        {% else %}
+        <p>Welcome, new user. Please log in.</p>
+        <a href="{% url 'login' %}" class="link-success">Login</a>
+        {% endif %}
+    </ul>
+
+    <div class="text-center border border-dark row col-lg-2">
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input class="btn btn-success" type="submit" value="Sign-in">
+            <p>{{ message }}</p>
+            <p>No account yet?<br><a href="{% url 'signup' %}"><span class="text-success">Create Account</span></a></p>
+        </form>
+    </div>
+    {% endblock content %}
+</body>
+
+</html>
