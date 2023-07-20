@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
+from django.urls import reverse_lazy
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -37,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_extensions',
     'authentication',
     'blog',
 ]
@@ -130,6 +132,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Auth settings
 AUTH_USER_MODEL = 'authentication.User'
 LOGIN_URL = "login"
-LOGIN_REDIRECT_URL = 'home'
+LOGIN_REDIRECT_URL = reverse_lazy('blog:home')
 LOGOUT_URL = 'logout'
 LOGOUT_REDIRECT_URL = '/'

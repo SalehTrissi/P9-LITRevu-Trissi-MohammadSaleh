@@ -17,10 +17,10 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.contrib.auth.views import LoginView, LogoutView
-import blog.views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('authentication.urls')),
-    path('home/', blog.views.home, name='home'),
+    # Pour resolve une vue du blog, par exemple au lieu de l'appeler home, on l'appellera blog:home
+    path('blog/', include(('blog.urls', 'blog'), namespace='blog')),
 ]
