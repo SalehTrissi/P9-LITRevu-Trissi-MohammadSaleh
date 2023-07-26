@@ -1,0 +1,44 @@
+.footer {
+	padding: 4rem 0;
+	background-color: #000;
+	color: #777;
+	.footer-site-logo {
+		font-size: 1.2rem;
+		color: white;
+	}
+	.nav-links {
+		li {
+			margin-bottom: 10px;
+			a {
+				color: darken(white, 50%);
+				&:hover {
+					color: white;
+				}
+			}
+		}
+	}
+	.btn {
+		&.btn-tertiary {
+			background-color: #0B5ED7;
+			color: white;
+			border-radius: 30px;
+			border: none;
+			padding: 10px 20px;
+		}
+	}
+	.social {
+		li {
+			display: inline-block;
+			a {
+				color: darken(white, 50%);
+				padding: 7px;
+				&:hover {
+					color: white;
+				}
+			}
+		}
+	}
+	.copyright {
+		border-top: 1px solid darken(white, 75%);
+	}
+}
