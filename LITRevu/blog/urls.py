@@ -1,7 +1,8 @@
 from django.urls import path
-from .views import home, TicketCreateView
+from .views import home, TicketCreateView, ReviewCreateView
 
 urlpatterns = [
     path('', home, name='home'),
-    path('tickets/create/', TicketCreateView.as_view(), name='create-ticket')
+    path('ticket/create/', TicketCreateView.as_view(), name='create-ticket'),
+    path('review/create/', ReviewCreateView.as_view(), name='create-review')
 ]
