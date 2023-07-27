@@ -1,29 +1,19 @@
 {% extends 'base.html' %}
+{% load django_bootstrap5 %}
 
 {% block content %}  
 <div class= "col-md-6 shadow p-4 mt-4 mb-5 bg-body rounded mx-auto">
     <h3 class="text-center hr">Créer un ticket</h3>
-    <div class="form border border-success d-flex justify-content-center ">
+    <div class="form border border-success d-flex justify-content-center p-2">
         <form method="POST">
+            {% if form.errors %}
+            <div class="alert alert-danger" role="alert">
+                {{ form.errors }}
+            </div>
+        {% endif %}
             {% csrf_token %}
-            <div class="mb-3 mt-3">
-                <label class="form-label">Title:</label>
-                <input type="text" class="form-control" aria-describedby="TitleHelp" name='title' placeholder='Titre de votre billet:'>
-            </div>
-
-            <div class="mb-3 mt-3">
-                <label class="form-label">Description:</label>
-                <textarea class="form-control" name='description' placeholder="Laissez un commentaire ici:" style="height: 100px"></textarea>
-            </div>
-
-            <div class="mb-3 mt-3">
-                <label class="form-label">Image:</label>
-                <input type="file" class="form-control" name='image' aria-label="Télécharger">
-            </div>
-
-            <div class="d-flex justify-content-center">
-                <button type="submit" class="btn btn-primary mx-auto mb-4 mt-3">Envoyer</button>
-            </div>
+            {% bootstrap_form form %}
+            {% bootstrap_button button_type="submit" content="Create a ticket" %}
         </form>
     </div>
 </div>
