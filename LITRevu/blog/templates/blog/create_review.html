@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+<div class= "col-md-6 shadow p-4 mt-4 mb-5 bg-body rounded mx-auto">
+    <h3 class="text-center">Créer une critique</h3>
+    <div class="form border border-success d-flex justify-content-center ">
+            <form method="post">
+                {% csrf_token %}
+                <p class='mt-1 fw-bolder'>À propos de ce livre:</p>
+                <div class="mb-3 mt-3">
+                    <label class="form-label">Title:</label>
+                    <input type="text" class="form-control" aria-describedby="TitleHelp" name='title' placeholder='Titre de votre billet:'>
+                </div>
+    
+                <div class="mb-3 mt-3">
+                    <label class="form-label">Description:</label>
+                    <textarea class="form-control" name='description' placeholder="Laissez un commentaire ici:" style="height: 100px"></textarea>
+                </div>
+    
+                <div class="mb-3 mt-3">
+                    <label class="form-label">Image:</label>
+                    <input type="file" class="form-control" name='image' aria-label="Télécharger">
+                </div>
+                <hr>
+                <p class='mt-1 fw-bolder'>Ma critique:</p>
+                <div class="mb-3 mt-3">
+                    <label class="form-label">Title:</label>
+                    <input type="text" class="form-control" aria-describedby="TitleHelp" name='headline' placeholder='Titre de votre critique:'>
+                </div>
+                <label class="form-label">Note:</label>
+                {% for i in "12345" %}
+                    <div class="mb-3 mt-3 form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="rating" id="inlineRadio{{ i }}" value="option{{ i }}">
+                        <label class="form-check-label" for="inlineRadio{{ i }}">{{ i }}</label>
+                    </div>
+                {% endfor %}
+                <div class="mb-3 mt-3">
+                    <label class="form-label">Commentaire:</label>
+                    <textarea class="form-control" name='body' placeholder="Laissez un commentaire ici:" style="height: 100px"></textarea>
+                </div>
+                
+                <div class="d-flex justify-content-center">
+                    <button type="submit" class="btn btn-primary mx-auto mb-4 mt-3">Envoyer</button>
+                </div>
+            </form>
+    </div>
+</div>
+{% endblock content %}
