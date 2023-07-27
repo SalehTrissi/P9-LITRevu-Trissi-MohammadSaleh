@@ -17,8 +17,6 @@ def create_ticket(request):
         if form.is_valid():
             ticket = form.save(commit=False)
             ticket.user = request.user
-            if form.cleaned_data['image']:
-                ticket.image = form.cleaned_data['image']
             ticket.save()
             return redirect('blog:home')
     return render(
@@ -39,7 +37,7 @@ def create_review(request, ticket_id):
             review.ticket.has_review = True
             review.ticket.save()
             review.save()
-            return redirect('blog')
+            return redirect('blog:home')
 
     return render(
         request,
@@ -65,7 +63,7 @@ def create_ticket_and_review(request):
             review.user = request.user
             review.ticket = get_object_or_404(models.Ticket, id=ticket.id)
             review.save()
-            return redirect('blog')
+            return redirect('blog:home')
     context = {
         'ticket_form': ticket_form,
         'review_form': review_form
@@ -86,12 +84,12 @@ def edit_ticket(request, ticket_id):
             edit_form = forms.TicketForm(request.POST, instance=ticket)
             if edit_form.is_valid():
                 edit_form.save()
-                return redirect('blog')
+                return redirect('blog:home')
         if 'delete_ticket' in request.POST:
             delete_form = forms.TicketFormDelete(request.POST)
             if delete_form.is_valid():
                 ticket.delete()
-                return redirect('blog')
+                return redirect('blog:home')
     context = {
         'edit_form': edit_form,
         'delete_form': delete_form
@@ -113,12 +111,12 @@ def edit_review(request, review_id):
             edit_form = forms.ReviewForm(request.POST, instance=review)
             if edit_form.is_valid():
                 edit_form.save()
-                return redirect('blog')
+                return redirect('blog:home')
         if 'delete_review' in request.POST:
             delete_form = forms.ReviewFormDelete(request.POST)
             if delete_form.is_valid():
                 review.delete()
-                return redirect('blog')
+                return redirect('blog:home')
     context = {
         'edit_form': edit_form,
         'delete_form': delete_form
