@@ -11,7 +11,8 @@ class Ticket(models.Model):
         max_length=2048, blank=True,
         verbose_name='Description'
     )
-    image = models.ImageField(null=True, blank=True, verbose_name='Image')
+    image = models.ImageField(null=True, blank=True, verbose_name='Image', upload_to='images/')
+
     time_created = models.DateTimeField(
         auto_now_add=True, verbose_name='Time created')
     user = models.ForeignKey(
@@ -24,12 +25,15 @@ class Ticket(models.Model):
 class Review(models.Model):
     ticket = models.ForeignKey(to=Ticket, on_delete=models.CASCADE)
     user = models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    RATING_CHOICES = [(i, str(i)) for i in range(6)]
+
     rating = models.PositiveSmallIntegerField(
         default=0,
         validators=[
             MinValueValidator(0),
             MaxValueValidator(5)
         ],
+        choices=RATING_CHOICES,
         verbose_name='Note'
     )
     headline = models.CharField(max_length=128, verbose_name='Titre')
@@ -53,6 +57,6 @@ class UserFollows(models.Model):
         on_delete=models.CASCADE,
         related_name='followed_by'
     )
-
+ 
     class Meta:
         unique_together = ('user', 'followed_user')

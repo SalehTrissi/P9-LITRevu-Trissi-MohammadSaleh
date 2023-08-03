@@ -2,6 +2,7 @@
 {% load django_bootstrap5 %}
 
 {% block content %}  
+<<<<<<< HEAD
 <div class= "col-md-6 shadow p-4 mt-4 mb-5 bg-body rounded mx-auto">
     <h3 class="text-center hr">Créer un ticket</h3>
     <div class="form border border-success d-flex justify-content-center p-2">
@@ -15,7 +16,21 @@
             {% bootstrap_form form %}
             {% bootstrap_button button_type="submit" content="Create a ticket" %}
         </form>
+=======
+    <div class= "col-md-6 shadow p-4 mt-4 mb-5 bg-body rounded mx-auto">
+        <h3 class="text-center">Créer un ticket</h3>
+        <div class="form border border-success d-flex justify-content-center ">
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="mb-3 mt-3">
+                    {% bootstrap_form form %}
+                </div>
+                <div class="mb-4 text-center">
+                    {%bootstrap_button button_type='submit' content='Envoyer' %}
+                </div>
+            </form>
+        </div>
+>>>>>>> 023f1ef4c93088ff70dc945cab3fc214aef5a0a2
     </div>
-</div>
 {% endblock content %}
   

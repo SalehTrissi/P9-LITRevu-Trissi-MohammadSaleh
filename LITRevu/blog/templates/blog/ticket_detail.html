@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="col-md-10 shadow p-4 mt-4 mb-5 bg-body rounded mx-auto">
+        <div class="col-md-9 shadow p-4 mt-4 mb-5 bg-body rounded mx-auto">
+            <div class="d-flex justify-content-between">
+                <p class='fw-bolder text-decoration-underline'><i class="bi bi-person-circle">{{ ticket.user }}</i></p>
+                <p>{{ ticket.time_created|date:'H-i, d-m-Y' }}</p>
+            </div>
+            <div class="ps-4 card">
+                <p class='fw-bolder'>{{ ticket.title }}</p>
+                <p>{{ ticket.description }}</p>
+                <div class="text-center">
+                    {% if ticket.image %}
+                        <img class="img-thumbnail rounded" src="{{ ticket.image.url }}" width="300" height="200" alt="{{ ticket.title }}">
+                    {% else %}
+                        <p>No image available</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+    
