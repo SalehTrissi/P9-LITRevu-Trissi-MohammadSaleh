@@ -5,12 +5,6 @@ from . import models
 
 
 class TicketForm(forms.ModelForm):
-<<<<<<< HEAD
-    edit_ticket = forms.BooleanField(widget=forms.HiddenInput, initial=True)
-    
-=======
-
->>>>>>> 023f1ef4c93088ff70dc945cab3fc214aef5a0a2
     class Meta:
         model = models.Ticket
         fields = ['title', 'description', 'image']
