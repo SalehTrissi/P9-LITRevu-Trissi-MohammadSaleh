@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    {% if messages %}
+    {% for message in messages %}
+    <div class="mt-2 alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endfor %}
+    {% endif %}
+    
+    <!-- Search form to follow other users -->
+    <h4 class="text-center mt-3">Rechercher un utilisateur:</h4>
+    <form method="post" class="d-flex mb-5 " role="search" action="{% url 'flux:search-user' %}">
+        {% csrf_token %}
+        <input class="form-control me-2" name="searched" type="search" placeholder="Rechercher un utilisateur" aria-label="Search">
+        <button class="btn btn-outline-secondary" type="submit">Rechercher</button>
+    </form>
+
+    {% if searched %}
+    <h4 class="text-center mt-3">Vous avez recherché l'utilisateur <span class="text-danger">{{ searched }}</span></h4>
+    <hr>
+    <!-- Table for showing subscriptions -->
+    <h4 class="text-center">Utilisatrices:</h4>
+    <table class="table table-striped mb-5">
+        <thead>
+            <tr>
+                <th>Utilisateur</th>
+                <th class="text-end">Action</th>
+            </tr>
+        </thead>
+    {% for user in users %}
+        </tbody>
+            <tr>
+                <td>{{ user }}</td>
+                <td class="text-end">
+                    {% if user.id in following_users %}
+                        <!-- Show "Désabonner" button if the user is already followed -->
+                        <a href="{% url 'blog:unsubscribe' user.id %}" class="btn btn-danger">Désabonner</a>
+                    {% else %}
+                        <!-- Show "S'abonner" button if the user is not followed -->
+                        <a href="{% url 'blog:subscribe' user.id %}" class="btn btn-primary">S'abonner</a>
+                    {% endif %}
+                </td>
+            </tr>
+        </tbody>
+    {% endfor %}
+    </table>
+  
+    {% if users|length == 0 %}
+        <h4 class="text-center mt-3 text-danger">Aucun utilisateur trouvé avec ce nom d'utilisateur.</h4>
+    {% endif %}
+
+    {% else %}
+        <h4 class="text-center mt-3 text-danger">Hé! Vous avez oublié de rechercher un utilisateur ...</h4>
+        <hr>
+    {% endif %}
+  
+{% endblock content %}

@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% load django_bootstrap5 %}
+
+
+{% block content %}
+    {% if messages %}
+        {% for message in messages %}
+            <div class="mt-2 alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+    <ul class="d-flex justify-content-evenly mt-3">
+        <a class="btn btn-outline-dark" href="{% url 'blog:create-ticket' %}" role="button">Créer un ticket</a>
+        <a class="btn btn-outline-dark" href="{% url 'blog:create-review' %}" role="button">Créer une critique</a>
+        <a class="btn btn-outline-dark" href="#" role="button">Demander une critique</a>
+      </ul>
+    <div class="col-md-10 shadow p-4 mt-4 mb-5 bg-body rounded mx-auto">
+        <p class="text-secondary text-center fs-3 text-decoration-underline">Vos posts</p>
+        {% for ticket in flux_ticket %}
+            <div class="col-md-9 shadow p-4 mt-4 mb-5 bg-body rounded mx-auto">
+                <div class="d-flex justify-content-between">
+                    <p class='fw-bolder text-decoration-underline'><i class="bi bi-person-circle">{{ ticket.user }}</i></p>
+                    <p>{{ ticket.time_created|date:'H-i, d-m-Y' }}</p>
+                </div>
+                <div class="ps-4 card">
+                    <p class='fw-bolder'>{{ ticket.title }}</p>
+                    <p>{{ ticket.description }}</p>
+                    <div class="text-center">
+                        {% if ticket.image %}
+                            <img class="img-thumbnail rounded" src="{{ ticket.image.url }}" width="300" height="200" alt="{{ ticket.title }}">
+                        {% else %}
+                            <p>No image available</p>
+                        {% endif %}
+                    </div>
+                    <a href="{% url 'blog:ticket-detail' ticket.id %}" class="btn stretched-link"></a>
+                </div>
+
+                <div class="text-end mt-3">
+                    <a href="{% url 'flux:update-ticket' ticket.id %}">
+                        {% bootstrap_button button_type="submit" content="Modifier" %}
+                    </a>
+                    <a href="{% url 'flux:delete-ticket' ticket.id %}" onclick="return confirmDelete()">
+                        {% bootstrap_button content="Supprimer" %}
+                    </a>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <script>
+        // Check if the cookie for the success message exists
+        if (!document.cookie.includes("success_message")) {
+            // Show the success message div
+            $("#msg").show();
+            // Set a cookie for the success message with an expiration time of 4 seconds
+            document.cookie = "success_message=true; max-age=4;";
+        }
+    </script>    
+{% endblock content %}

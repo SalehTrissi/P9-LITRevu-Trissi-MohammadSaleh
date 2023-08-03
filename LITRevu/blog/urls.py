@@ -1,11 +1,24 @@
 from django.urls import path
-from .views import home, create_ticket, create_ticket_and_review, edit_ticket, edit_review
+from . import views
+
 
 urlpatterns = [
-    path('', home, name='home'),
-    path('ticket/create/', create_ticket, name='create-ticket'),
-    path('review/create/', create_ticket_and_review, name='create-review'),
-    path('ticket/edit/<int:ticket_id>', edit_ticket, name='edit-ticket'),
-    path('review/edit/<int:review_id>', edit_review, name='edit-review'),
+    path('', views.flux, name='flux'),
+    path('create_ticket/', views.create_ticket, name='create-ticket'),
+    path('create_review/',
+         views.create_review, name='create-review'),
+    path('posts/', views.posts, name='posts'),
+    path('show_ticket/<int:ticket_id>/',
+         views.ticket_detail, name='ticket-detail'),
+    path('update_ticket/<int:ticket_id>/',
+         views.update_ticket, name='update-ticket'),
+    path('delete_ticket/<int:ticket_id>/',
+         views.delete_ticket, name='delete-ticket'),
+    path('update_review/<int:review_id>/',
+         views.update_review, name='update-review'),
+    path('subscriptions/', views.subscriptions, name='subscriptions'),
+    path('search_user/', views.search_user, name='search-user'),
+    path('subscribe/<int:user_id>/', views.subscribe_user, name='subscribe'),
+    path('unsubscribe/<int:user_id>/', views.unsubscribe_user, name='unsubscribe'),
 
 ]

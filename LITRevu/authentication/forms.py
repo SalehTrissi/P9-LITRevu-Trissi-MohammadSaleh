@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm
-
+from .models import User
 
 class LoginForm(forms.Form):
     class Meta:
@@ -10,17 +10,10 @@ class LoginForm(forms.Form):
 
 
 class SignupForm(UserCreationForm):
-    email = forms.EmailField(widget=forms.EmailInput(attrs={'class':'form-control'}))
-    first_name = forms.CharField(widget=forms.TextInput(attrs={'class':'form-control'})) 
-    last_name = forms.CharField(widget=forms.TextInput(attrs={'class':'form-control'})) 
-    role = forms.ChoiceField(widget=forms.Select(attrs={'class':'form-select'}))
+    email = forms.EmailField()
+    first_name = forms.CharField() 
+    last_name = forms.CharField() 
+    role = forms.ChoiceField(choices= User.ROLE_CHOICES)
     class Meta(UserCreationForm.Meta):
         model = get_user_model()
         fields = ('username', 'email', 'first_name', 'last_name', 'role')
-
-    def __init__(self, *args, **kwargs):
-        super(SignupForm, self).__init__(*args, **kwargs)
-        
-        self.fields['username'].widget.attrs['class'] = 'form-control'
-        self.fields['password1'].widget.attrs['class'] = 'form-control'
-        self.fields['password2'].widget.attrs['class'] = 'form-control'

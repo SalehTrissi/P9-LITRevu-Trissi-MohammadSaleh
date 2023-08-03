@@ -1,44 +1,47 @@
 {% load static %}
 
 <section class="ftco-navbar">
-  <div class="container-fluid px-md-12">
-    <div class="col-md-12 text-center">
-      <a class="navbar-brand" href="#">
-        <img class="rounded mx-auto d-block" src="{% static 'img/logo.png' %}" width="100" height="80" alt="Logo" />
-        <h4>LITRevu</h4>
-      </a>
+    <div class="container-fluid px-md-12">
+        <div class="col-md-12 text-center">
+        <a class="navbar-brand" href="{% url 'blog:flux' %}">
+            <img class="rounded mx-auto d-block" src="{% static 'img/logo.png' %}" width="100" height="80" alt="Logo" />
+            <h4>LITRevu</h4>
+        </a>
+        </div>
     </div>
-  </div>
 
-  {% if user.is_authenticated %}
-  <nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light">
-    <div class="container-fluid">
-      <ul class="navbar-nav m-auto ">
-        <li class="nav-item active">
-          <a href="#" class="nav-link ">Home</a>
-        </li>
-        <li class="nav-item"><a href="#" class="nav-link">Flux</a></li>
-        <li class="nav-item"><a href="#" class="nav-link">Posts</a></li>
-        <li class="nav-item">
-          <a href="#" class="nav-link">Abonnements</a>
-        </li>
-        <li class="nav-item link-success">
-          <a href="{% url 'logout' %}" class="nav-link">Logout</a>
-        </li>
-      </ul>
-    </div>
-  </nav>
-  {% else %}
-  <nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light">
-    <div class="container-fluid">
-      <ul class="navbar-nav m-auto">
-        <h3 class="text-light">Bienvenue</h3>
-        <li class="nav-item position-absolute end-0">
-          <a href="{% url 'login' %}" class="nav-link" type='submit'>Login</a>
-        </li>
-      </ul>
-    </div>
-  </nav>
-  <!-- END nav -->
+    {% if user.is_authenticated %}
+    <nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light">
+        <div class="container-fluid">
+        <div class="nav-item d-flex">
+            <a href="{% url 'blog:flux' %}" class="btn text-light fw-bold">LITRevu</a>
+        </div>
+        <ul class="nav justify-content-center">
+            <li class="nav-item"><a href="{% url 'blog:flux' %}" class="nav-link link-light">Flux</a></li>
+            <li class="nav-item"><a href="{% url 'blog:posts' %}" class="nav-link link-light">Posts</a></li>
+            <li class="nav-item">
+            <a href="{% url 'blog:subscriptions' %}" class="nav-link link-light">Abonnements</a>
+            </li>        
+        </ul>
+        
+        <div class="nav-item d-flex">
+            <a href="{% url 'blog:posts' %}" class="btn text-light"><i class="bi bi-person-circle"></i>{{ user.username }}</a>
+            <a href="{% url 'logout' %}" class="btn btn-outline-light">Logout</a>
+        </div>
+
+        </div>
+    </nav>
+    {% else %}
+    <nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light">
+        <div class="container-fluid">
+        <ul class="navbar-nav m-auto">
+            <h3 class="text-light">Bienvenue</h3>
+            <li class="nav-item position-absolute end-0">
+            <a href="{% url 'login' %}" class="nav-link" type='submit'>Login</a>
+            </li>
+        </ul>
+        </div>
+    </nav>
+    <!-- END nav -->
 </section>
 {% endif %}

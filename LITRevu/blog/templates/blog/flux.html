@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+
+{% load django_bootstrap5 %}
+
+
+{% block content %}
+    {% if messages %}
+        {% for message in messages %}
+            <div class="mt-2 alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+<ul class="d-flex justify-content-evenly mt-3">
+  <a class="btn btn-outline-dark" href="{% url 'blog:create-ticket' %}" role="button">Créer un ticket</a>
+  <a class="btn btn-outline-dark" href="{% url 'blog:create-review' %}" role="button">Créer une critique</a>
+  <a class="btn btn-outline-dark" href="#" role="button">Demander une critique</a>
+</ul>
+
+<div class="col-md-10 shadow p-4 mt-4 mb-5 bg-body rounded mx-auto">
+    {% for ticket in flux_ticket %}
+      <div class="col-md-9 shadow p-4 mt-4 mb-5 bg-body rounded mx-auto">
+        <div class="d-flex justify-content-between">
+          <p class='fw-bolder text-decoration-underline'><i class="bi bi-person-circle">{{ticket.user}}</i></p>
+          <p>{{ ticket.time_created|date:'H-i, d-m-Y' }}</p>
+        </div>
+        <div class="ps-4 card">
+          <p class='fw-bolder'>{{ ticket.title }}</p>
+          <p>{{ ticket.description }}</p>
+          <div class="text-center">
+            {% if ticket.image %}
+              <img class="img-thumbnail rounded" src="{{ ticket.image.url }}" width="300" height="200" alt="{{ ticket.title }}">
+            {% else %}
+              <p>No image available</p>
+            {% endif %}
+          </div>
+          <a href="{% url 'blog:ticket-detail' ticket.id %}" class="btn stretched-link"></a>
+        </div>
+        {% if ticket.user == request.user %}
+          <div class="text-end mt-3">
+            <a href="{% url 'flux:update-ticket' ticket.id %}" class="text-outline-dark">
+                {% bootstrap_button button_type="submit" content="Modifier" %}
+            </a>
+            <a href="{% url 'flux:delete-ticket' ticket.id %}" onclick="return confirmDelete()">
+                {% bootstrap_button content="Supprimer" %}
+            </a>
+          </div>
+        {% endif %}
+      </div>
+    {% endfor %}
+</div>
+
+
+<div class="col-md-10 shadow p-4 mt-4 mb-5 bg-body rounded mx-auto">
+  {% for review in flux_review %}
+    <div class="col-md-9 shadow p-4 mt-4 mb-5 bg-body rounded mx-auto">
+      <div class="d-flex justify-content-between">
+        <p class='fw-bolder text-decoration-underline'><i class="bi bi-person-circle">{{review.user}}</i></p>
+        <p>{{ review.time_created|date:'H-i, d-m-Y' }}</p>
+      </div>
+      <div class="ps-4 card">
+        <p class='fw-bolder'>{{ review.title }}</p>
+        <p>{{ review.description }}</p>
+        <div class="text-center">
+          {% if review.image %}
+            <img class="img-thumbnail rounded" src="{{ review.image.url }}" width="300" height="200" alt="{{ review.title }}">
+          {% else %}
+            <p>No image available</p>
+          {% endif %}
+        </div>
+        <a href="#" class="btn stretched-link"></a>
+      </div>
+      {% if review.user == request.user %}
+        <div class="text-end mt-3">
+          <a href="{% url 'flux:update-review' review.id %}">
+              {% bootstrap_button button_type="submit" content="Modifier" %}
+          </a>
+          <a href="{% url 'flux:delete-ticket' review.id %}">
+              {% bootstrap_button content="Supprimer" %}
+          </a>
+        </div>
+      {% endif %}
+    </div>
+  {% endfor %}
+</div>
+
+  {% endblock content %}

@@ -1,14 +1,21 @@
 {% extends 'base.html' %}
 {% load django_bootstrap5 %}
 
-{% block content %}  
+{% block content %}
     <div class= "col-md-6 shadow p-4 mt-4 mb-5 bg-body rounded mx-auto">
-        <h3 class="text-center">Créer un ticket</h3>
+        <h3 class="text-center">Modifier votre critique</h3>
         <div class="form border border-success d-flex justify-content-center ">
             <form method="POST" enctype="multipart/form-data">
                 {% csrf_token %}
                 <div class="mb-3 mt-3">
-                    {% bootstrap_form form %}
+                    {% bootstrap_form form_review %}
+                    <div class="text-center">
+                        {% if review.image %}
+                          <img class="img-thumbnail rounded" src="{{ review.image.url }}" width="300" height="200" alt="{{ review.title }}">
+                        {% else %}
+                          <p>No image available</p>
+                        {% endif %}
+                      </div>
                 </div>
                 <div class="mb-4 text-center">
                     {%bootstrap_button button_type='submit' content='Envoyer' %}
@@ -16,5 +23,5 @@
             </form>
         </div>
     </div>
+    
 {% endblock content %}
-  
