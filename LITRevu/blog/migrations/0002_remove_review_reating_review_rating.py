@@ -7,17 +7,24 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('blog', '0001_initial'),
+        ("blog", "0001_initial"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='review',
-            name='reating',
+            model_name="review",
+            name="reating",
         ),
         migrations.AddField(
-            model_name='review',
-            name='rating',
-            field=models.PositiveSmallIntegerField(default=0, validators=[django.core.validators.MinValueValidator(0), django.core.validators.MaxValueValidator(5)], verbose_name='Note'),
+            model_name="review",
+            name="rating",
+            field=models.PositiveSmallIntegerField(
+                default=0,
+                validators=[
+                    django.core.validators.MinValueValidator(0),
+                    django.core.validators.MaxValueValidator(5),
+                ],
+                verbose_name="Note",
+            ),
         ),
     ]

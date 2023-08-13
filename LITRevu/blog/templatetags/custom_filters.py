@@ -1,5 +1,6 @@
 from django.template import Library
 from blog import models
+
 register = Library()
 
 

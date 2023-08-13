@@ -7,9 +7,9 @@
     <ul class="d-flex justify-content-evenly mt-3 list-unstyled">
         {% comment %} <li><a class="btn btn-outline-dark" href="{% url 'blog:create-ticket' %}" role="button">Créer un ticket</a></li> {% endcomment %}
         <li><a class="btn btn-outline-dark" href="{% url 'blog:create-review' %}" role="button">Créer une critique</a></li>
-        <li><a class="btn btn-outline-dark" href="{% url 'blog:create-ticket' %}" role="button">Demander une critique</a></li>  
+        <li><a class="btn btn-outline-dark" href="{% url 'blog:create-ticket' %}" role="button">Demander une critique</a></li>
     </ul>
-    
+
     <div class="bg-light bg-opacity-75 col-md-10 shadow mt-4 mb-3 p-4 bg-body rounded mx-auto">
         <p class="text-secondary text-center fs-3 text-decoration-underline">Flux</p>
         {% for item in page %}
@@ -36,11 +36,11 @@
                     <span class="page-link">Previous</span>
                 </li>
             {% endif %}
-    
+
             {% for num_page in page.paginator.page_range %}
                 <li class="page-item"><a class="page-link link-dark" href="?page={{num_page}}">{{num_page}}</a></li>
             {% endfor %}
-    
+
             {% if page.has_next %}
                 <li class="page-item">
                     <a class="page-link link-dark" href="?page={{page.next_page_number}}">Next</a>
@@ -52,6 +52,6 @@
             {% endif %}
         </ul>
     </nav>
-    
-    
+
+
 {% endblock content %}

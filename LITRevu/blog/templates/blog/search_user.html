@@ -2,8 +2,8 @@
 
 {% block content %}
 
-    {% include 'blog/message.html' %}    
-    
+    {% include 'blog/message.html' %}
+
     <!-- Search form to follow other users -->
     <h4 class="text-center mt-3">Rechercher un utilisateur:</h4>
     <form method="post" class="d-flex mb-5 " role="search" action="{% url 'flux:search-user' %}">
@@ -41,7 +41,7 @@
         </tbody>
     {% endfor %}
     </table>
-  
+
     {% if users|length == 0 %}
         <h4 class="text-center mt-3 text-danger">Aucun utilisateur trouvé avec ce nom d'utilisateur.</h4>
     {% endif %}
@@ -50,5 +50,5 @@
         <h4 class="text-center mt-3 text-danger">Hé! Vous avez oublié de rechercher un utilisateur ...</h4>
         <hr>
     {% endif %}
-  
+
 {% endblock content %}

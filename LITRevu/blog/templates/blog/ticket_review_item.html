@@ -13,7 +13,7 @@
             {% endif %}
         {% endif %}
     </div>
-    
+
 
     <div class="card-body">
         <div class="card-title d-flex justify-content-between">
@@ -35,7 +35,7 @@
                     </div>
                 </div>
             {% endif %}
-            
+
             {% if is_review %}
                 <div class="d-flex justify-content-between">
                     <p><span class="fw-bolder">Titre: </span>{{ item.headline }}</p>
@@ -83,7 +83,7 @@
                 </div>
             {% endif %}
             <div class="flex-grow-1"></div>
-            {% if request.user == item.user and is_review %} 
+            {% if request.user == item.user and is_review %}
                 <div class="">
                     <a href="{% url 'flux:update-review' item.id %}">
                         {% bootstrap_button button_type="submit" button_class="btn-outline-success" content="Modifier" %}
@@ -102,6 +102,6 @@
                 </a>
             </div>
             {% endif %}
-        </div>        
+        </div>
     </div>
 </div>
