@@ -14,11 +14,15 @@ urlpatterns = [
          views.update_ticket, name='update-ticket'),
     path('delete_ticket/<int:ticket_id>/',
          views.delete_ticket, name='delete-ticket'),
+    path('delete_review/<int:review_id>/',
+         views.delete_review, name='delete-review'),
     path('update_review/<int:review_id>/',
          views.update_review, name='update-review'),
     path('subscriptions/', views.subscriptions, name='subscriptions'),
     path('search_user/', views.search_user, name='search-user'),
     path('subscribe/<int:user_id>/', views.subscribe_user, name='subscribe'),
-    path('unsubscribe/<int:user_id>/', views.unsubscribe_user, name='unsubscribe'),
-
+    path('unsubscribe/<int:user_id>/',
+         views.unsubscribe_user, name='unsubscribe'),
+    path('response_review/<int:ticket_id>/',
+         views.response_review, name='response-review'),
 ]

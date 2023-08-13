@@ -1,11 +1,59 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from . import forms
+from itertools import chain
 from authentication.models import User
 from .models import Ticket, Review, UserFollows
 from django.contrib import messages
+from django.core.paginator import Paginator
 
-# Create your views here.
+
+@login_required
+def flux(request):
+    flux_ticket = Ticket.objects.all()
+    flux_review = Review.objects.all()
+
+    combined_data = sorted(
+        chain(flux_ticket, flux_review),
+        key=lambda instance: instance.time_created,
+        reverse=True
+    )
+
+    p = Paginator(combined_data, 4)
+    page_number = request.GET.get('page')
+    page = p.get_page(page_number)
+
+    context = {
+        'page': page,
+    }
+
+    return render(request, 'blog/flux.html', context)
+
+
+@login_required
+def posts(request):
+    # Filter the Ticket and Review objects for the currently logged-in user
+    posts_ticket = Ticket.objects.filter(user=request.user)
+    posts_review = Review.objects.filter(user=request.user)
+
+    combined_data = sorted(
+        chain(posts_ticket, posts_review),
+        key=lambda instance: instance.time_created,
+        reverse=True
+    )
+
+    p = Paginator(combined_data, 4)
+    # Get the current page number from the query parameter 'page'
+    page_number = request.GET.get('page')
+
+    # Paginate the filtered ticket and review data
+    page = p.get_page(page_number)
+
+    context = {
+        'page': page,
+    }
+
+    return render(request, 'blog/posts.html', context)
 
 
 @login_required
@@ -25,12 +73,14 @@ def create_ticket(request):
             # Display a success message
             messages.success(request, 'Ticket créé avec succès.')
 
-            # Redirect to the 'flux' page (you may need to change the URL name if it's different)
+            # Redirect to the 'flux' page
             return redirect('blog:flux')
         else:
             # If the form is not valid, display an error message
             messages.error(
-                request, 'Erreur lors de la création du ticket. Veuillez vérifier le formulaire.')
+                request,
+                'Erreur lors de la création du ticket. Veuillez vérifier le formulaire.'
+            )
     else:
         # If the request is a GET request (i.e., the user is loading the page),
         # create an instance of an empty ticket form
@@ -53,7 +103,7 @@ def create_review(request):
         ticket_form = forms.TicketForm(request.POST, request.FILES)
         review_form = forms.ReviewForm(request.POST)
 
-        # Check if both forms are valid
+        # Check if both forms are valids
         if ticket_form.is_valid() and review_form.is_valid():
             # Save the ticket form to get the ticket object
             ticket = ticket_form.save(commit=False)
@@ -70,12 +120,13 @@ def create_review(request):
             review.save()
 
             # Redirect to the 'posts' page
-            messages.success(request, 'Review created successfully.')
+            messages.success(request, 'Critique créé avec succès.')
             return redirect('blog:posts')
         else:
-            # If the forms are not valid, print the review form errors to the console
-            # (You can display these errors in the template as well if desired)
-            print(review_form.errors)
+            messages.error(
+                request,
+                'Erreur lors de la création une critique. Veuillez vérifier le formulaire.'
+            )
     else:
         # If the request is a GET request (i.e., the user is loading the page),
         # create instances of empty ticket and review forms
@@ -93,34 +144,37 @@ def create_review(request):
 
 
 @login_required
-def flux(request):
-    # Get all the tickets from the database
-    flux_ticket = Ticket.objects.all()
-    # Get all the reviews from the database
-    flux_review = Review.objects.all()
+def response_review(request, ticket_id):
+    ticket = Ticket.objects.get(id=ticket_id)
 
-    # Create a context dictionary containing the ticket and review data
+    if request.method == 'POST':
+        review_form = forms.ReviewForm(request.POST)
+        if review_form.is_valid():
+            review = review_form.save(commit=False)
+            review.ticket = ticket
+            review.user = request.user
+            review.save()
+
+            messages.success(request, 'Critique créée avec succès.')
+            return redirect('blog:flux')
+        else:
+            messages.error(
+                request,
+                'Erreur lors de la création d\'une critique. Veuillez vérifier le formulaire.'
+            )
+    else:
+        review_form = forms.ReviewForm()
+
     context = {
-        'flux_ticket': flux_ticket,
-        'flux_review': flux_review,
+        'review_form': review_form,
+        'ticket': ticket,
     }
 
-    # Render the 'flux.html' template with the data in the context
-    return render(request, 'blog/flux.html', context)
+    return render(request, 'blog/response_review.html', context)
 
 
-@login_required
-def posts(request):
-    # Filter the Ticket objects for the currently logged-in user
-    flux_ticket = Ticket.objects.filter(user=request.user)
-
-    # Create a context dictionary containing the filtered ticket data
-    context = {
-        'flux_ticket': flux_ticket,
-    }
-
-    # Render the 'posts.html' template with the data in the context
-    return render(request, 'blog/posts.html', context)
+def model_type(value):
+    return type(value).__name__
 
 
 @login_required
@@ -142,9 +196,7 @@ def update_ticket(request, ticket_id):
     # Get the ticket object with the given ticket_id or return a 404 error page if not found
     ticket = get_object_or_404(Ticket, id=ticket_id)
 
-    # Check if the current user is the owner of the ticket
     if request.user != ticket.user:
-        # If the user is not the owner, redirect them to the 'flux' page or display an error message
         return redirect('blog:flux')
 
     if request.method == 'POST':
@@ -152,8 +204,14 @@ def update_ticket(request, ticket_id):
         form_ticket = forms.TicketForm(request.POST, instance=ticket)
 
         if form_ticket.is_valid():
-            # If the form data is valid, save the updated ticket
-            form_ticket.save()
+            # Save the form data excluding the image field
+            updated_ticket = form_ticket.save(commit=False)
+
+            # Check if a new image was uploaded
+            if 'image' in request.FILES:
+                updated_ticket.image = request.FILES['image']
+
+            updated_ticket.save()
 
             # Display a success message
             messages.success(
@@ -234,9 +292,26 @@ def delete_ticket(request, ticket_id):
     ticket.delete()
 
     # Display a success message indicating that the ticket was deleted successfully
-    messages.success(request, 'Votre publication est supprimée avec succès')
+    messages.success(request, 'Votre ticket est supprimée avec succès')
 
     # Redirect the user to the 'posts' page after successful deletion
+    return redirect('blog:posts')
+
+
+@login_required
+def delete_review(request, review_id):
+    # Get the review object with the given review_id or return a 404 error if not found
+    review = get_object_or_404(Review, id=review_id)
+
+    # Check if the current user is the owner of the review
+    if request.user != review.user:
+        return redirect('blog:flux')
+
+    # If the user is the owner of the review, proceed to delete it
+    review.delete()
+
+    messages.success(request, 'Votre review est supprimée avec succès')
+
     return redirect('blog:posts')
 
 

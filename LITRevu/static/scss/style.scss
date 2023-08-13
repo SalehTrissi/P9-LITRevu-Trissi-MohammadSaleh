@@ -1,15 +1,10 @@
 @import 'footer';
 
-$body-colore: #f4f4f4;
+$body-colore: #473636;
 $body-font: Helvetica, sans-serif;
 
-*{
-	background-image: url(../img/_4287fca8-9b5f-41a9-800c-f252e90d476e.jpg);
-}
-
 body {
-    // background-color: $body-colore;
-	background-image: url(../img/_4287fca8-9b5f-41a9-800c-f252e90d476e.jpg);
+    background-color: $body-colore;
     font-family: $body-font;
     line-height: 1.6;
 }
@@ -21,6 +16,7 @@ a {
 	}
 }
 
-.TEST{
-	color: brown;
+.img-book{
+	width:"300";
+	height:"200";
 }

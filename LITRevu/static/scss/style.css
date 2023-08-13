@@ -37,12 +37,8 @@
   border-top: 1px solid #404040;
 }
 
-* {
-  background-image: url(../img/_4287fca8-9b5f-41a9-800c-f252e90d476e.jpg);
-}
-
 body {
-  background-image: url(../img/_4287fca8-9b5f-41a9-800c-f252e90d476e.jpg);
+  background-color: #473636;
   font-family: Helvetica, sans-serif;
   line-height: 1.6;
 }
@@ -52,8 +48,4 @@ a {
 }
 a, a:hover {
   text-decoration: none !important;
-}
-
-.TEST {
-  color: brown;
 }/*# sourceMappingURL=style.css.map */

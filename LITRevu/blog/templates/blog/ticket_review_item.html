@@ -1,0 +1,107 @@
+{% load django_bootstrap5 %}
+
+<div class="card text-center col-md-auto mb-4 bg-light bg-opacity-25">
+
+    <div class="card-header alert {% if is_review %}alert-info{% else %}alert-success{% endif %} p-1 mb-0">
+        {% if ticket.review_set.all.count > 0 %}
+            <span>Cette ticket a déjà une critique.</span>
+        {% else %}
+            {% if request.user == item.user %}
+                <span>Vous avez {% if is_review %}publié une critique{% else %}demandé une critique{% endif %}</span>
+            {% else %}
+                <span>{{item.user.username}} a {% if is_review %}publié une critique{% else %}demandé une critique{% endif %}</span>
+            {% endif %}
+        {% endif %}
+    </div>
+    
+
+    <div class="card-body">
+        <div class="card-title d-flex justify-content-between">
+            <p class="fw-bolder text-decoration-underline"><i class="bi bi-person-circle p-1"></i>{{ item.user }}</p>
+            <p>{{ item.time_created|date:'H:i, d-m-Y' }}</p>
+        </div>
+
+        <div class="card-text">
+            {% if not is_review %}
+                <div class="text-start  mb-3">
+                    <p class="fst-italic fw-bolder">Titre: <span class ="fst-italic fw-normal">{{ item.title }}</span></p>
+                    <p class="fw-bolder">Description: <span class ="fw-normal">{{ item.description }}</span></p>
+                    <div class="text-center">
+                        {% if item.image %}
+                            <img class="img-thumbnail rounded bg-light bg-opacity-25" src="{{ item.image.url }}" width="300" height="200" alt="{{ item.title }}">
+                        {% else %}
+                            <p>No image available</p>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endif %}
+            
+            {% if is_review %}
+                <div class="d-flex justify-content-between">
+                    <p><span class="fw-bolder">Titre: </span>{{ item.headline }}</p>
+                    <div class="mx-auto">
+                        {% for star in "*****" %}
+                            {% if forloop.counter <= item.rating %}
+                                <i class="bi bi-star-fill"></i>
+                            {% else %}
+                                <i class="bi bi-star"></i>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div>
+                    <p class="fw-bolder text-start">Description: <span class ="fw-normal">{{ item.body }}</span></p>
+                </div>
+
+                <div class="col-md-8 shadow p-4 mt-4 mb-3 bg-body rounded mx-auto bg-light bg-opacity-50">
+                    <div class="card-title d-flex justify-content-between">
+                        <p class="fw-bolder text-decoration-underline"><i class="bi bi-person-circle p-1"></i>{{ item.ticket.user }}</p>
+                        <p>{{ item.ticket.time_created|date:'H:i, d-m-Y' }}</p>
+                    </div>
+                    <p class="fst-italic fw-bolder">Titre: <span class ="fst-italic fw-normal">{{ item.ticket.title }}</span></p>
+                    <p class="fw-bolder">Description: <span class ="fw-normal"> {{ item.ticket.description }}</span></p>
+                    <div class="text-center">
+                        {% if item.ticket.image %}
+                            <img class="img-book img-thumbnail rounded bg-light bg-opacity-25" src="{{ item.ticket.image.url }}" width="300" height="200" alt="{{ item.ticket.title }}">
+                        {% else %}
+                            <p>No image available</p>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="card-footer text-muted">
+        <div class="d-flex bd-highlight ">
+            {% if not is_review and ticket.review_set.all.count == 0 %}
+                <div class="text-start flex-grow-1">
+                    <a href="{% url 'flux:response-review' item.id %}">
+                        {% bootstrap_button button_type="submit" button_class="btn-outline-success" content="Créer une critique" %}
+                    </a>
+                </div>
+            {% endif %}
+            <div class="flex-grow-1"></div>
+            {% if request.user == item.user and is_review %} 
+                <div class="">
+                    <a href="{% url 'flux:update-review' item.id %}">
+                        {% bootstrap_button button_type="submit" button_class="btn-outline-success" content="Modifier" %}
+                    </a>
+                    <a href="{% url 'flux:delete-review' item.id %}">
+                        {% bootstrap_button button_class="btn-outline-danger" content="Supprimer" %}
+                    </a>
+                </div>
+            {% elif request.user == item.user and not is_review %}
+            <div class="">
+                <a href="{% url 'flux:update-ticket' item.id %}">
+                    {% bootstrap_button button_type="submit" button_class="btn-outline-success" content="Modifier" %}
+                </a>
+                <a href="{% url 'flux:delete-ticket' item.id %}">
+                    {% bootstrap_button button_class="btn-outline-danger" content="Supprimer" %}
+                </a>
+            </div>
+            {% endif %}
+        </div>        
+    </div>
+</div>

@@ -18,11 +18,13 @@ class ReviewForm(forms.ModelForm):
         fields = ['headline', 'body', 'rating']
         success_url = reverse_lazy('blog:flux')
 
-        widgets = {
-            'rating': RadioSelect(choices=models.Review.RATING_CHOICES, attrs={"class": "form-check-input"})
-        }
     # Set rating field to not required
-    rating = forms.IntegerField(required=False)
+    rating = forms.IntegerField(
+        required=False,
+        widget=forms.RadioSelect(
+            choices=[(i, str(i)) for i in range(6)]
+        )
+    )
 
 
 class FollowUserForm(forms.ModelForm):

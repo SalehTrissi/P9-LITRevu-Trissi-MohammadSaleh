@@ -2,23 +2,37 @@
 {% load django_bootstrap5 %}
 
 {% block content %}
-    <div class= "col-md-6 shadow p-4 mt-4 mb-5 bg-body rounded mx-auto">
+
+    <div class="col-md-6 shadow p-4 mt-4 mb-5 bg-body rounded mx-auto">
         <h3 class="text-center">Créer une critique</h3>
-        <div class="form border border-success d-flex justify-content-center ">
+        <div class="form border border-success d-flex justify-content-center">
             <form method="POST" enctype="multipart/form-data">
                 {% csrf_token %}
                 <p class='mt-1 fw-bolder'>À propos de ce livre:</p>
                 <div class='mb-3 mt-3'>
-                    {% bootstrap_form ticket_form %}
+                    <div class="mb-3">
+                        <label class="form-label" for="id_title">Title:</label>
+                        <input class="form-control" type="text" placeholder='{{ticket.title}}' disabled>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="id_title">Description:</label>
+                        <input class="form-control" type="text" placeholder='{{ticket.description}}' disabled>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="id_title">Image:</label>
+                        <div class="text-center">
+                            <img class="img-thumbnail rounded " src="{{ticket.image.url}}" width="300" height="200" alt="{{ item.title }}"/>
+                        </div>
+                    </div>
+                    {% comment %} {% bootstrap_form ticket_form %} {% endcomment %}
                 </div>
                 <hr>
-                <p class='mt-1 fw-bolder'>Ma critique:</p>                
+                <p class='mt-1 fw-bolder'>Ma critique:</p>
                 <div class="mb-3 mt-3">
                     {% bootstrap_field review_form.headline %}
                 </div>
 
                 <div class="mb-3 mt-3 form-check-inline">
-                    <!-- Modify this line to display the radio buttons inline -->
                     <div class="mb-3">
                         <label class="form-label me-3">Rating:</label>
                         {% for radio in review_form.rating %}
@@ -28,7 +42,7 @@
                             </label>
                         {% endfor %}
                     </div>
-                </div>        
+                </div>
 
                 <div class="mb-3 mt-3">
                     {% bootstrap_field review_form.body %}
