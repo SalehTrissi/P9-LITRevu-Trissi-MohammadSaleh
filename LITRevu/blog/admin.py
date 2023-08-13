@@ -4,13 +4,21 @@ from blog.models import Ticket, Review, UserFollows
 
 # Register your models here.
 class TicketAdmin(admin.ModelAdmin):
-    list_display = ('id', 'title', 'description',
-                    'image', 'time_created', 'user')
+    list_display = ("id", "title", "description", "image", "time_created", "user")
 
 
 class ReviewAdmin(admin.ModelAdmin):
-    list_display = ('id', 'ticket_title', 'ticket_image', 'ticket_description', 'user',
-                    'rating', 'headline', 'body', 'time_created')
+    list_display = (
+        "id",
+        "ticket_title",
+        "ticket_image",
+        "ticket_description",
+        "user",
+        "rating",
+        "headline",
+        "body",
+        "time_created",
+    )
 
     def ticket_title(self, obj):
         return obj.ticket.title
@@ -23,7 +31,7 @@ class ReviewAdmin(admin.ModelAdmin):
 
 
 class UserFollowsAdmin(admin.ModelAdmin):
-    list_display = ('id', 'user', 'followed_user')
+    list_display = ("id", "user", "followed_user")
 
 
 admin.site.register(Ticket, TicketAdmin)
