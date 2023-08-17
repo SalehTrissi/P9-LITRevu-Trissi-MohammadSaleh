@@ -162,3 +162,5 @@ cython_debug/
 desktop.ini
 * desktop.ini
 *.idea
+.flake8
+.pre-commit-config.yaml
