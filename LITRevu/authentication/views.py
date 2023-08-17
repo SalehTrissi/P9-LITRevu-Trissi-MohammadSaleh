@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.views.generic import View
 from django.contrib.auth import login, authenticate
 from django.conf import settings
+from django.contrib import messages
 from . import forms
 
 # Create your views here.
@@ -43,4 +44,14 @@ def signup_page(request):
             # auto-login user
             login(request, user)
             return redirect(settings.LOGIN_REDIRECT_URL)
-    return render(request, "authentication/signup.html", context={"form": form})
+        else:
+            messages.error(request,
+                           "Il y a eu une erreur avec le formulaire. "
+                           "Veuillez vérifier les informations que vous avez saisies."
+                           )
+            return redirect("signup")
+
+    context = {
+        "form": form,
+    }
+    return render(request, "authentication/signup.html", context)

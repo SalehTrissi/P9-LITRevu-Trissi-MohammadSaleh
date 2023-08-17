@@ -12,7 +12,6 @@ from django.core.paginator import Paginator
 def flux(request):
     flux_ticket = Ticket.objects.all()
     flux_review = Review.objects.all()
-
     combined_data = sorted(
         chain(flux_ticket, flux_review),
         key=lambda instance: instance.time_created,
@@ -35,6 +34,8 @@ def posts(request):
     # Filter the Ticket and Review objects for the currently logged-in user
     posts_ticket = Ticket.objects.filter(user=request.user)
     posts_review = Review.objects.filter(user=request.user)
+    show_critiques = True
+    show_tickets = False
 
     combined_data = sorted(
         chain(posts_ticket, posts_review),
@@ -51,6 +52,8 @@ def posts(request):
 
     context = {
         "page": page,
+        "show_critiques": show_critiques,
+        "show_tickets": show_tickets,
     }
 
     return render(request, "blog/posts.html", context)

@@ -1,12 +1,13 @@
 {% extends 'base.html' %}
 {% load django_bootstrap5 %}
+
 {% block content %}
+
+{% include 'blog/message.html' %}
+
 <div class="bg-light col-md-6 shadow p-4 mt-4 mb-5 bg-body rounded mx-auto">
     <h3 class="text-center">Insrciption</h3>
     <div class="p-4 form border border-success d-flex justify-content-center form-control ">
-        {% if form.errors %}
-            {% bootstrap_form form.errors %}
-        {% endif %}
         <form method="post">
             {% csrf_token %}
             {% bootstrap_form form %}

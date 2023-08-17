@@ -1,0 +1,33 @@
+{% load django_bootstrap5 %}
+
+<div class="card-footer text-muted">
+    <div class="d-flex bd-highlight">
+        {% if not is_review and ticket.review_set.all.count == 0 %}
+            <div class="text-start flex-grow-1">
+                <a href="{% url 'flux:response-review' item.id %}">
+                    {% bootstrap_button button_type="submit" button_class="btn-outline-success" content="Créer une critique" %}
+                </a>
+            </div>
+        {% endif %}
+        <div class="flex-grow-1"></div>
+        {% if request.user == item.user and is_review %}
+            <div class="">
+                <a href="{% url 'flux:update-review' item.id %}">
+                    {% bootstrap_button button_type="submit" button_class="btn-outline-success" content="Modifier" %}
+                </a>
+                <a href="{% url 'flux:delete-review' item.id %}">
+                    {% bootstrap_button button_class="btn-outline-danger" content="Supprimer" %}
+                </a>
+            </div>
+        {% elif request.user == item.user and not is_review %}
+            <div class="">
+                <a href="{% url 'flux:update-ticket' item.id %}">
+                    {% bootstrap_button button_type="submit" button_class="btn-outline-success" content="Modifier" %}
+                </a>
+                <a href="{% url 'flux:delete-ticket' item.id %}">
+                    {% bootstrap_button button_class="btn-outline-danger" content="Supprimer" %}
+                </a>
+            </div>
+        {% endif %}
+    </div>
+</div>
