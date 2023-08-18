@@ -1,0 +1,71 @@
+{% load custom_filters %}
+{% load django_bootstrap5 %}
+
+
+<ul class="d-flex justify-content-evenly mt-3 list-unstyled">
+    <li><a class="btn btn-outline-dark" href="{% url 'blog:create-review' %}" role="button">Créer une critique</a></li>
+    <li><a class="btn btn-outline-dark" href="{% url 'blog:create-ticket' %}" role="button">Demander une critique</a></li>
+
+    <div class="btn-group">
+        <button type="button" class="btn btn-outline-dark dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+            Afficher: <span id="selected-option">Tous</span>
+        </button>
+        <ul class="dropdown-menu">       
+            <li><a id="tickets-link" class="dropdown-item">Tickets</a></li> 
+            <li><a id="critiques-link" class="dropdown-item">Critiques</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a id="all-link" class="dropdown-item">Tous</a></li>
+
+        </ul>
+    </div>
+    
+</ul>
+
+<div class="bg-light bg-opacity-75 col-md-10 shadow mt-4 mb-3 p-4 bg-body rounded mx-auto">
+    <p class="text-secondary text-center fs-3 text-decoration-underline">{{ content_title }}</p>
+    {% for item in page %}
+    <div class="is-item toggle-content {% if item|is_ticket %}is-ticket{% elif item|is_review %}is-review{% endif %}">
+        {% if item|is_ticket %}
+        <div class='is-ticket'>
+            {% with ticket=item is_review=False %}
+                {% include 'blog/ticket_review_item.html' %}
+            {% endwith %}
+        </div>
+        {% elif item|is_review %}
+        <div class='is-review'>
+            {% with review=item is_review=True %}
+                {% include 'blog/ticket_review_item.html' %}
+            {% endwith %}
+        </div>
+        {% endif %}
+    </div>
+    {% endfor %}
+</div>
+
+<nav aria-label="Page navigation example link-dark">
+    <ul class="pagination justify-content-center link-dark">
+        {% if page.has_previous %}
+            <li class="page-item ">
+                <a class="page-link link-dark" href="?page={{page.previous_page_number}}">Previous</a>
+            </li>
+        {% else %}
+            <li class="page-item disabled">
+                <span class="page-link">Previous</span>
+            </li>
+        {% endif %}
+
+        {% for num_page in page.paginator.page_range %}
+            <li class="page-item"><a class="page-link link-dark" href="?page={{num_page}}">{{num_page}}</a></li>
+        {% endfor %}
+
+        {% if page.has_next %}
+            <li class="page-item">
+                <a class="page-link link-dark" href="?page={{page.next_page_number}}">Next</a>
+            </li>
+        {% else %}
+            <li class="page-item disabled">
+                <span class="page-link">Next</span>
+            </li>
+        {% endif %}
+    </ul>
+</nav>
