@@ -1,5 +1,4 @@
 from django import forms
-from django.forms import RadioSelect
 from django.urls import reverse_lazy
 from . import models
 

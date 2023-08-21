@@ -10,13 +10,18 @@ from django.core.paginator import Paginator
 
 @login_required
 def flux(request):
-    flux_ticket = Ticket.objects.all()
-    flux_review = Review.objects.all()
-    combined_data = sorted(
-        chain(flux_ticket, flux_review),
-        key=lambda instance: instance.time_created,
-        reverse=True,
-    )
+    # Get the list of users that the logged-in user is following
+    followed_users = request.user.following.all().values_list('followed_user', flat=True)
+
+    # Filter tickets and reviews separately
+    flux_ticket = Ticket.objects.filter(user__in=followed_users) | Ticket.objects.filter(user=request.user)
+    flux_review = Review.objects.filter(user__in=followed_users) | Review.objects.filter(ticket__user=request.user)
+
+    # Combine the QuerySets into a single list
+    combined_data = list(chain(flux_ticket, flux_review))
+
+    # Sort the combined data by time_created
+    combined_data.sort(key=lambda instance: instance.time_created, reverse=True)
 
     p = Paginator(combined_data, 4)
     page_number = request.GET.get("page")
@@ -61,31 +66,25 @@ def posts(request):
 
 @login_required
 def create_ticket(request):
-    # If the form is submitted via POST
     if request.method == "POST":
         # Create an instance of the ticket form with the submitted data
         form = forms.TicketForm(request.POST, request.FILES)
-        # Check if the form is valid
         if form.is_valid():
-            # Save the ticket form to get the ticket object
             ticket = form.save(commit=False)
             # Set the user for the ticket
             ticket.user = request.user
             ticket.save()
 
-            # Display a success message
             messages.success(request, "Ticket créé avec succès.")
 
-            # Redirect to the 'flux' page
             return redirect("blog:flux")
         else:
-            # If the form is not valid, display an error message
             messages.error(
                 request,
                 "Erreur lors de la création du ticket. Veuillez vérifier le formulaire.",
             )
     else:
-        # If the request is a GET request (i.e., the user is loading the page),
+        # If the request is a GET request (the user is loading the page),
         # create an instance of an empty ticket form
         form = forms.TicketForm()
 
@@ -94,21 +93,17 @@ def create_ticket(request):
         "form": form,
     }
 
-    # Render the template with the ticket form
     return render(request, "blog/create_ticket.html", context)
 
 
 @login_required
 def create_review(request):
-    # If the form is submitted via POST
     if request.method == "POST":
         # Create instances of both ticket and review forms with the submitted data
         ticket_form = forms.TicketForm(request.POST, request.FILES)
         review_form = forms.ReviewForm(request.POST)
 
-        # Check if both forms are valids
         if ticket_form.is_valid() and review_form.is_valid():
-            # Save the ticket form to get the ticket object
             ticket = ticket_form.save(commit=False)
             # Set the user for the ticket
             ticket.user = request.user
@@ -119,10 +114,8 @@ def create_review(request):
             # Set the user and ticket for the review
             review.user = request.user
             review.ticket = ticket
-            # Save the review to the database
             review.save()
 
-            # Redirect to the 'posts' page
             messages.success(request, "Critique créé avec succès.")
             return redirect("blog:posts")
         else:
@@ -131,7 +124,7 @@ def create_review(request):
                 "Erreur lors de la création une critique. Veuillez vérifier le formulaire.",
             )
     else:
-        # If the request is a GET request (i.e., the user is loading the page),
+        # If the request is a GET request (the user is loading the page),
         # create instances of empty ticket and review forms
         ticket_form = forms.TicketForm()
         review_form = forms.ReviewForm()
@@ -142,7 +135,6 @@ def create_review(request):
         "review_form": review_form,
     }
 
-    # Render the template with the forms
     return render(request, "blog/create_review.html", context)
 
 
@@ -181,20 +173,7 @@ def model_type(value):
 
 
 @login_required
-def ticket_detail(request, ticket_id):
-    # Get the ticket object with the given ticket_id or return a 404 error page if not found
-    ticket = get_object_or_404(Ticket, id=ticket_id)
-
-    # Create a context dictionary containing the ticket data
-    context = {"ticket": ticket}
-
-    # Render the 'ticket_detail.html' template with the data in the context
-    return render(request, "blog/ticket_detail.html", context)
-
-
-@login_required
 def update_ticket(request, ticket_id):
-    # Get the ticket object with the given ticket_id or return a 404 error page if not found
     ticket = get_object_or_404(Ticket, id=ticket_id)
 
     if request.user != ticket.user:
@@ -214,13 +193,11 @@ def update_ticket(request, ticket_id):
 
             updated_ticket.save()
 
-            # Display a success message
             messages.success(request, "Votre ticket est mis à jour avec succès.")
 
             # Redirect the user to the 'posts' page after successful ticket update
             return redirect("blog:posts")
         else:
-            # Display an error message if the form data is not valid
             messages.error(
                 request,
                 "Erreur lors de la mise à jour du ticket. Veuillez vérifier le formulaire.",
@@ -235,18 +212,15 @@ def update_ticket(request, ticket_id):
         "form_ticket": form_ticket,
     }
 
-    # Render the 'update_ticket.html' template with the data in the context
     return render(request, "blog/update_ticket.html", context)
 
 
 @login_required
 def update_review(request, review_id):
-    # Get the review object with the given review_id or return a 404 error if not found
     review = get_object_or_404(Review, id=review_id)
 
     # Check if the current user is the owner of the review
     if request.user != review.user:
-        # Redirect the user to the 'flux' page or display an error message
         return redirect("blog:flux")
 
     # If the request method is POST, it means the form is submitted for updating the review
@@ -254,15 +228,9 @@ def update_review(request, review_id):
         # Create a ReviewForm instance with the submitted POST data and the existing review object
         form_review = forms.ReviewForm(request.POST, instance=review)
 
-        # Check if the form data is valid
         if form_review.is_valid():
-            # Save the form data to update the review
             form_review.save()
-
-            # Display a success message indicating that the review was updated successfully
             messages.success(request, "Votre review est mise à jour avec succès")
-
-            # Redirect the user to the 'posts' page after successful update
             return redirect("blog:posts")
     else:
         # If the request method is GET, it means the user is accessing the page to view the form
@@ -275,7 +243,6 @@ def update_review(request, review_id):
         "form_review": form_review,
     }
 
-    # Render the 'update_review.html' template with the context data
     return render(request, "blog/update_review.html", context)
 
 
@@ -286,16 +253,12 @@ def delete_ticket(request, ticket_id):
 
     # Check if the current user is the owner of the ticket
     if request.user != ticket.user:
-        # Redirect the user to the 'flux' page or display an error message
         return redirect("blog:flux")
 
-    # If the user is the owner of the ticket, proceed to delete it
     ticket.delete()
 
-    # Display a success message indicating that the ticket was deleted successfully
     messages.success(request, "Votre ticket est supprimée avec succès")
 
-    # Redirect the user to the 'posts' page after successful deletion
     return redirect("blog:posts")
 
 
@@ -415,8 +378,6 @@ def unsubscribe_user(request, user_id):
         # Set the warning message for the user
         message = f"Vous n'êtes pas abonné à {followed_user.username}."
 
-    # Display the appropriate message to the user
     messages.warning(request, message)
 
-    # Redirect the user to the 'subscriptions' page
     return redirect("blog:subscriptions")
